@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookScanne - Discover Your Books</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #fff;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .logo .icon {
+            color: #2ecc71;
+            margin-right: 8px;
+            font-size: 26px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #2ecc71;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 50px 30px;
+            margin: 50px auto;
+            text-align: center;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 25px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            margin-top: 30px;
+            padding: 40px 20px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            text-align: center;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .upload-section.drag-over {
+            background-color: #f0f9f4;
+            border-color: #2ecc71;
+        }
+
+        .upload-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .upload-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .upload-instruction {
+            color: #666;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .preview-container {
+            margin-top: 20px;
+            display: none;
+            max-width: 100%;
+            text-align: center;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .scan-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .scan-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .scanning-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            color: white;
+            z-index: 10;
+        }
+
+        .scanning-text {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 80%;
+            height: 10px;
+            background-color: #444;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: #2ecc71;
+            transition: width 0.5s ease;
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .results-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Book Grid */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 30px 0 50px;
+        }
+
+        .book-card {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .book-info {
+            padding: 20px;
+        }
+
+        .book-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .book-author, .book-genre, .book-published, .book-rating {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .book-description {
+            font-size: 14px;
+            color: #777;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        .rating {
+            color: #f39c12;
+            font-size: 18px;
+        }
+
+        .initial-books {
+            margin-top: 50px;
+        }
+
+        .initial-books h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #444;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .footer-section p {
+            margin-bottom: 15px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            color: #fff;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        /* Spinner */
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid #2ecc71;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Book details popup */
+        .book-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .book-popup-content {
+            background-color: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 10px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .book-detail-flex {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .book-detail-image {
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        .book-detail-image img {
+            width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .book-detail-info h2 {
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .book-detail-meta {
+            margin-bottom: 20px;
+        }
+
+        .book-detail-meta p {
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .book-summary {
+            line-height: 1.6;
+            color: #444;
+        }
+
+        /* Loading animation */
+        .loading-animation {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        /* File input explicit styling */
+        .file-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .file-input-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .status-message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        
+        .success {
+            color: #2ecc71;
+        }
+        
+        .error {
+            color: #e74c3c;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .book-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .book-detail-flex {
+                flex-direction: column;
+            }
+
+            .book-detail-image {
+                width: 150px;
+                margin: 0 auto 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .upload-section {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">
+                    <span class="icon">◉</span>
+                    BookScanne
+                </a>
+                <div class="nav-links">
+                    <a href="#">Home</a>
+                    <a href="#">Features</a>
+                    <a href="#">Contact</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Discover Your Books</h1>
+            <p>Upload an image of your bookshelf or a book cover to start discovering detailed information about your books.</p>
+            
+            <div class="upload-section" id="upload-area">
+                <div class="file-input-container">
+                    <label for="file-input" class="file-input-label">Choose an image file:</label>
+                    <input type="file" id="file-input" accept="image/*">
+                </div>
+                
+                <p class="upload-instruction">or drag and drop an image here</p>
+                <div id="status-message" class="status-message"></div>
+                
+                <div class="preview-container" id="preview-container">
+                    <img id="preview-image" class="preview-image" alt="Book preview">
+                    <button id="scan-btn" class="scan-btn">Scan for Books</button>
+                </div>
+                
+                <div class="scanning-overlay" id="scanning-overlay">
+                    <div class="spinner"></div>
+                    <div class="scanning-text" id="scanning-text">Scanning books...</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="results-section">
+            <h2 class="results-heading">Scan Results</h2>
+            <div id="results-grid" class="book-grid">
+                <!-- Results will be added here -->
+            </div>
+        </section>
+
+        <!-- Example Books -->
+        <section class="initial-books">
+            <h2>Popular Books</h2>
+            <div class="book-grid">
+                <!-- Book 1 -->
+                <div class="book-card" data-id="book1">
+                    <img src="https://via.placeholder.com/300x200/333/fff?text=Silent+Observer" alt="The Silent Observer" class="book-cover">
+                    <div class="book-info">
+                        <h3 class="book-title">The Silent Observer</h3>
+                        <p class="book-author">Author: Emma Carter</p>
+                        <p class="book-genre">Genre: Mystery</p>
+                        <p class="book-published">Published: 2021</p>
+                        <p class="book-rating">Rating: <span class="rating">★★★★☆</span></p>
+                    </div>
+                </div>
+
+                <!-- Book 2 -->
+                <div class="book-card" data-id="book2">
+                    <img src="https://via.placeholder.com/300x200/
