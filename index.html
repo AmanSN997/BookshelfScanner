@@ -243,7 +243,7 @@
             margin-bottom: 10px;
         }
 
-        .book-author, .book-genre, .book-published, .book-rating {
+        .book-author, .book-genre, .book-published, .book-rating, .book-isbn {
             color: #666;
             margin-bottom: 5px;
         }
@@ -253,6 +253,12 @@
             color: #777;
             margin-top: 10px;
             line-height: 1.4;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
         }
 
         .rating {
@@ -268,6 +274,23 @@
             text-align: center;
             margin-bottom: 30px;
             color: #444;
+        }
+
+        .recognition-details {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .recognition-label {
+            display: inline-block;
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            border: 1px solid rgba(46, 204, 113, 0.3);
         }
 
         /* Footer */
@@ -335,6 +358,7 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
+            overflow-y: auto;
         }
 
         .book-popup-content {
@@ -346,6 +370,7 @@
             border-radius: 10px;
             padding: 30px;
             position: relative;
+            margin: 20px 0;
         }
 
         .close-popup {
@@ -393,6 +418,71 @@
             color: #444;
         }
 
+        .book-additional-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .book-additional-info h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .book-quotes {
+            margin-top: 20px;
+        }
+
+        .book-quote {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 10px;
+            padding-left: 15px;
+            border-left: 3px solid #3498db;
+        }
+
+        /* Stats section */
+        .stats-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .stats-heading {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #444;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
         /* Loading animation */
         .loading-animation {
             display: flex;
@@ -430,114 +520,46 @@
             color: #e74c3c;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 36px;
-            }
-            
-            .book-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-
-            .book-detail-flex {
-                flex-direction: column;
-            }
-
-            .book-detail-image {
-                width: 150px;
-                margin: 0 auto 20px;
-            }
+        .processing-steps {
+            margin-top: 15px;
+            width: 80%;
+            text-align: left;
         }
 
-        @media (max-width: 480px) {
-            .nav-links {
-                gap: 15px;
-            }
-            
-            .hero h1 {
-                font-size: 28px;
-            }
-
-            .upload-section {
-                padding: 20px 15px;
-            }
+        .processing-step {
+            padding: 10px;
+            margin-bottom: 5px;
+            border-left: 3px solid #ddd;
+            color: #777;
+            background-color: rgba(255,255,255,0.1);
         }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <nav>
-                <a href="#" class="logo">
-                    <span class="icon">◉</span>
-                    BookScanne
-                </a>
-                <div class="nav-links">
-                    <a href="#">Home</a>
-                    <a href="#">Features</a>
-                    <a href="#">Contact</a>
-                </div>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <h1>Discover Your Books</h1>
-            <p>Upload an image of your bookshelf or a book cover to start discovering detailed information about your books.</p>
-            
-            <div class="upload-section" id="upload-area">
-                <div class="file-input-container">
-                    <label for="file-input" class="file-input-label">Choose an image file:</label>
-                    <input type="file" id="file-input" accept="image/*">
-                </div>
-                
-                <p class="upload-instruction">or drag and drop an image here</p>
-                <div id="status-message" class="status-message"></div>
-                
-                <div class="preview-container" id="preview-container">
-                    <img id="preview-image" class="preview-image" alt="Book preview">
-                    <button id="scan-btn" class="scan-btn">Scan for Books</button>
-                </div>
-                
-                <div class="scanning-overlay" id="scanning-overlay">
-                    <div class="spinner"></div>
-                    <div class="scanning-text" id="scanning-text">Scanning books...</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        .processing-step.active {
+            border-left-color: #3498db;
+            color: white;
+            background-color: rgba(52, 152, 219, 0.2);
+        }
 
-        <!-- Results Section -->
-        <section class="results-section" id="results-section">
-            <h2 class="results-heading">Scan Results</h2>
-            <div id="results-grid" class="book-grid">
-                <!-- Results will be added here -->
-            </div>
-        </section>
+        .processing-step.completed {
+            border-left-color: #2ecc71;
+            color: rgba(255,255,255,0.7);
+            background-color: rgba(46, 204, 113, 0.2);
+        }
 
-        <!-- Example Books -->
-        <section class="initial-books">
-            <h2>Popular Books</h2>
-            <div class="book-grid">
-                <!-- Book 1 -->
-                <div class="book-card" data-id="book1">
-                    <img src="https://via.placeholder.com/300x200/333/fff?text=Silent+Observer" alt="The Silent Observer" class="book-cover">
-                    <div class="book-info">
-                        <h3 class="book-title">The Silent Observer</h3>
-                        <p class="book-author">Author: Emma Carter</p>
-                        <p class="book-genre">Genre: Mystery</p>
-                        <p class="book-published">Published: 2021</p>
-                        <p class="book-rating">Rating: <span class="rating">★★★★☆</span></p>
-                    </div>
-                </div>
+        .related-books {
+            margin-top: 30px;
+        }
 
-                <!-- Book 2 -->
-                <div class="book-card" data-id="book2">
-                    <img src="https://via.placeholder.com/300x200/
+        .recommendation-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #444;
+            text-align: center;
+        }
+
+        .bookshelf-stats {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #555;
+        }
