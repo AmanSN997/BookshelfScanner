@@ -1,194 +1,391 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BookScanne - Discover Your Books</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f2f2f2;
-    }
-    header {
-      background-color: #fff;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    header h1 {
-      color: #2ecc71;
-    }
-    .container {
-      max-width: 800px;
-      margin: 30px auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    .upload-section {
-      text-align: center;
-      padding: 20px;
-      border: 2px dashed #ccc;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    .upload-btn {
-      background-color: #2ecc71;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .upload-btn:hover {
-      background-color: #27ae60;
-    }
-    #imagePreview {
-      margin-top: 20px;
-      max-width: 100%;
-      border-radius: 5px;
-    }
-    .books-found {
-      margin-top: 30px;
-    }
-    .book-card {
-      background-color: #f9f9f9;
-      border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-      margin-bottom: 20px;
-      padding: 20px;
-    }
-    .book-title {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .book-author {
-      color: #555;
-      margin-bottom: 10px;
-    }
-    .book-summary {
-      color: #777;
-    }
-    .loading {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 18px;
-      color: #3498db;
-    }
-  </style>
-</head>
-
-<body>
-
-<header>
-  <h1>BookScanne</h1>
-  <p>Discover books by scanning your shelf!</p>
-</header>
-
-<div class="container">
-  <div class="upload-section">
-    <input type="file" id="fileInput" accept="image/*" style="display:none" />
-    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Upload Bookshelf Image</button>
-    <div id="imageContainer">
-      <img id="imagePreview" src="#" alt="Image Preview" style="display:none" />
-    </div>
-  </div>
-
-  <div class="loading" id="loading" style="display:none">
-    Analyzing your bookshelf...
-  </div>
-
-  <div class="books-found" id="booksFound">
-    <!-- Book cards will be populated here -->
-  </div>
-</div>
-
-<script>
-  const fileInput = document.getElementById('fileInput');
-  const imagePreview = document.getElementById('imagePreview');
-  const loading = document.getElementById('loading');
-  const booksFound = document.getElementById('booksFound');
-
-  fileInput.addEventListener('change', handleImageUpload);
-
-  function handleImageUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-      imagePreview.src = e.target.result;
-      imagePreview.style.display = 'block';
-
-      // Simulate analyzing after showing image
-      analyzeImage();
-    };
-
-    reader.readAsDataURL(file);
-  }
-
-  function analyzeImage() {
-    loading.style.display = 'block';
-    booksFound.innerHTML = '';
-
-    // Simulating async image analysis (replace with real API call)
-    setTimeout(() => {
-      loading.style.display = 'none';
-
-      // Dummy results (Replace with actual results from backend/API)
-      const detectedBooks = [
-        {
-          title: 'Atomic Habits',
-          author: 'James Clear',
-          summary: 'A guide to building good habits and breaking bad ones.',
-        },
-        {
-          title: 'Sapiens: A Brief History of Humankind',
-          author: 'Yuval Noah Harari',
-          summary: 'Explores the history and impact of Homo sapiens on the world.',
-        },
-        {
-          title: 'Deep Work',
-          author: 'Cal Newport',
-          summary: 'Rules for focused success in a distracted world.',
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookScan</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f4f4f4;
         }
-      ];
 
-      displayBooks(detectedBooks);
-    }, 2000);
-  }
+        header {
+            background-color: #ffffff;
+            color: #333;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
-  function displayBooks(books) {
-    books.forEach(book => {
-      const bookCard = document.createElement('div');
-      bookCard.className = 'book-card';
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
 
-      const title = document.createElement('div');
-      title.className = 'book-title';
-      title.textContent = book.title;
+        nav a {
+            color: #555;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
 
-      const author = document.createElement('div');
-      author.className = 'book-author';
-      author.textContent = `Author: ${book.author}`;
+        nav a:hover {
+            background-color: #e0e0e0;
+        }
 
-      const summary = document.createElement('div');
-      summary.className = 'book-summary';
-      summary.textContent = book.summary;
+        main {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-      bookCard.appendChild(title);
-      bookCard.appendChild(author);
-      bookCard.appendChild(summary);
+        .upload-section, .results-section {
+            width: 90%;
+            max-width: 800px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
 
-      booksFound.appendChild(bookCard);
-    });
-  }
-</script>
+        .upload-container h2, .results-section h2 {
+            margin-top: 0;
+            color: #333;
+            margin-bottom: 15px;
+        }
 
+        .upload-container p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .image-preview-container {
+            width: 80%; /* Take more width in upload container */
+            max-width: 500px; /* Maximum width */
+            height: auto; /* Adjust height dynamically based on width to be square */
+            aspect-ratio: 1 / 1; /* Enforce square aspect ratio */
+            margin: 20px auto;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-preview {
+            display: none;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Ensure full image is always visible */
+        }
+
+        .placeholder-text {
+            position: absolute;
+            color: #aaa;
+        }
+
+        .button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ddd;
+            color: #333;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+        }
+
+        .button:hover {
+            background-color: #ccc;
+        }
+
+        .button.primary-button {
+            background-color: #6759FF;
+            color: white;
+        }
+
+        .button.primary-button:hover {
+            background-color: #5247cc;
+        }
+
+        .button:disabled {
+            background-color: #eee;
+            color: #999;
+            cursor: default;
+        }
+
+        .button:disabled:hover {
+            background-color: #eee;
+        }
+
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .book-item {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .book-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .book-author, .book-genre {
+            color: #777;
+            font-size: 0.9em;
+            margin-bottom: 3px;
+        }
+
+
+        footer {
+            background-color: #4a4a4a;
+            color: #fff;
+            padding: 20px 30px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .social-icons {
+            margin-top: 10px;
+        }
+
+        .social-icons img {
+            width: 25px;
+            height: 25px;
+            margin: 0 5px;
+            vertical-align: middle;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                text-align: center;
+            }
+            nav {
+                margin-top: 10px;
+            }
+            nav a {
+                padding: 8px 12px;
+                margin: 0 5px;
+            }
+            .upload-section, .results-section {
+                padding: 20px;
+            }
+            .image-preview-container {
+                width: 95%; /* Take more width on smaller screens */
+                max-width: none; /* Remove max-width for better responsiveness */
+            }
+            .results-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">BookScan</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Upload</a>
+            <a href="#">Results</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="upload-section">
+            <div class="upload-container">
+                <h2>Upload Your Image</h2>
+                <p>Please upload a picture of your books or bookshelves for analysis. Accepted formats: JPG, PNG.</p>
+                <div class="image-preview-container">
+                    <img id="uploadedImage" src="#" alt="Uploaded Image Preview" class="image-preview">
+                    <div id="placeholderText" class="placeholder-text">No image selected</div>
+                </div>
+
+                <input type="file" id="imageUpload" accept="image/jpeg, image/png" style="display: none;">
+                <button id="selectImageButton" class="button">Select Image</button>
+                <button id="proceedButton" class="button primary-button" disabled>Proceed to Analysis</button>
+            </div>
+        </section>
+
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <h2>Analysis Results</h2>
+            <div class="results-grid" id="resultsGrid">
+                </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>Contact us at <a href="mailto:support@bookscan.com">support@bookscan.com</a></p>
+            <p>Follow us on social media</p>
+            <div class="social-icons">
+                <a href="#" target="_blank"><img src="img/facebook-icon.png" alt="Facebook"></a>
+                <a href="#" target="_blank"><img src="img/twitter-icon.png" alt="Twitter"></a>
+                <a href="#" target="_blank"><img src="img/instagram-icon.png" alt="Instagram"></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectImageButton = document.getElementById('selectImageButton');
+            const imageUpload = document.getElementById('imageUpload');
+            const uploadedImage = document.getElementById('uploadedImage');
+            const placeholderText = document.getElementById('placeholderText');
+            const proceedButton = document.getElementById('proceedButton');
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsGrid = document.getElementById('resultsGrid');
+
+            let uploadedFile = null; // To store the uploaded image file
+
+            selectImageButton.addEventListener('click', () => {
+                imageUpload.click(); // Trigger file input click
+            });
+
+            imageUpload.addEventListener('change', function() {
+                uploadedFile = this.files[0]; // Store the file
+                if (uploadedFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        uploadedImage.src = e.target.result;
+                        uploadedImage.style.display = 'block'; // Show image
+                        placeholderText.style.display = 'none'; // Hide placeholder
+                    }
+                    reader.readAsDataURL(uploadedFile);
+                    proceedButton.disabled = false; // Enable Proceed button once image is selected
+                } else {
+                    resetImagePreview();
+                }
+            });
+
+            proceedButton.addEventListener('click', () => {
+                if (uploadedFile) {
+                    simulateAnalysis(); // Simulate book analysis
+                } else {
+                    alert("Please select an image first.");
+                }
+            });
+
+            function resetImagePreview() {
+                uploadedImage.src = '#';
+                uploadedImage.style.display = 'none';
+                placeholderText.style.display = 'block';
+                proceedButton.disabled = true; // Disable Proceed button if no image
+                uploadedFile = null;
+            }
+
+
+            function simulateAnalysis() {
+                proceedButton.textContent = 'Analyzing...'; // Change button text
+                proceedButton.disabled = true; // Disable button during analysis
+
+                // Simulate analysis delay (e.g., 2 seconds)
+                setTimeout(() => {
+                    proceedButton.textContent = 'Proceed to Analysis'; // Reset button text
+                    resultsSection.style.display = 'block'; // Show results section
+                    displayBookResults(generateDummyBookData()); // Display dummy results
+
+                }, 2000); // 2 seconds delay for simulation
+            }
+
+            function generateDummyBookData() {
+                return [
+                    {
+                        title: "The Lord of the Rings",
+                        author: "J.R.R. Tolkien",
+                        genre: "Fantasy",
+                        coverImage: "img/lotr.jpg" // Replace with actual image URLs, or use placeholders
+                    },
+                    {
+                        title: "Pride and Prejudice",
+                        author: "Jane Austen",
+                        genre: "Classic",
+                        coverImage: "img/pride.jpg"
+                    },
+                    {
+                        title: "1984",
+                        author: "George Orwell",
+                        genre: "Dystopian",
+                        coverImage: "img/1984.jpg"
+                    },
+                    {
+                        title: "To Kill a Mockingbird",
+                        author: "Harper Lee",
+                        genre: "Classic",
+                        coverImage: "img/mockingbird.jpg"
+                    },
+                    {
+                        title: "The Hitchhiker's Guide to the Galaxy",
+                        author: "Douglas Adams",
+                        genre: "Science Fiction",
+                        coverImage: "img/hitchhikers.jpg"
+                    }
+                    // Add more book data as needed
+                ];
+            }
+
+            function displayBookResults(books) {
+                resultsGrid.innerHTML = ''; // Clear previous results
+                books.forEach(book => {
+                    const bookItem = document.createElement('div');
+                    bookItem.classList.add('book-item');
+                    bookItem.innerHTML = `
+                        <img src="${book.coverImage}" alt="${book.title} Cover" class="book-cover">
+                        <h3 class="book-title">${book.title}</h3>
+                        <p class="book-author">By ${book.author}</p>
+                        <p class="book-genre">Genre: ${book.genre}</p>
+                    `;
+                    resultsGrid.appendChild(bookItem);
+                });
+            }
+        });
+    </script>
+    <img src="img/facebook-icon.png" style="display:none">
+    <img src="img/twitter-icon.png" style="display:none">
+    <img src="img/instagram-icon.png" style="display:none">
+    <img src="img/lotr.jpg" style="display:none">
+    <img src="img/pride.jpg" style="display:none">
+    <img src="img/1984.jpg" style="display:none">
+    <img src="img/mockingbird.jpg" style="display:none">
+    <img src="img/hitchhikers.jpg" style="display:none">
 </body>
 </html>
